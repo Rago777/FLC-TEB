@@ -79,6 +79,11 @@ void TebConfig::loadRosParamFromNodeHandle(const ros::NodeHandle& nh)
   nh.param("acc_lim_x", robot.acc_lim_x, robot.acc_lim_x);
   nh.param("acc_lim_y", robot.acc_lim_y, robot.acc_lim_y);
   nh.param("acc_lim_theta", robot.acc_lim_theta, robot.acc_lim_theta);
+  // add jerk constraint
+  nh.param("jerk_lim_x", robot.jerk_lim_x, robot.jerk_lim_x);
+  nh.param("jerk_lim_y", robot.jerk_lim_y, robot.jerk_lim_y);
+  nh.param("jerk_lim_theta", robot.jerk_lim_theta, robot.jerk_lim_theta);
+  // finish jerk constraint
   nh.param("min_turning_radius", robot.min_turning_radius, robot.min_turning_radius);
   nh.param("wheelbase", robot.wheelbase, robot.wheelbase);
   nh.param("cmd_angle_instead_rotvel", robot.cmd_angle_instead_rotvel, robot.cmd_angle_instead_rotvel);
@@ -210,6 +215,11 @@ void TebConfig::reconfigure(TebLocalPlannerReconfigureConfig& cfg)
   robot.acc_lim_x = cfg.acc_lim_x;
   robot.acc_lim_y = cfg.acc_lim_y;
   robot.acc_lim_theta = cfg.acc_lim_theta;
+  // add jerk constraint
+  robot.jerk_lim_x = cfg.jerk_lim_x;
+  robot.jerk_lim_y = cfg.jerk_lim_y;
+  robot.jerk_lim_theta = cfg.jerk_lim_theta;
+  // finish add jerk constraint
   robot.min_turning_radius = cfg.min_turning_radius;
   robot.wheelbase = cfg.wheelbase;
   robot.cmd_angle_instead_rotvel = cfg.cmd_angle_instead_rotvel;
@@ -255,6 +265,11 @@ void TebConfig::reconfigure(TebLocalPlannerReconfigureConfig& cfg)
   optim.weight_acc_lim_x = cfg.weight_acc_lim_x;
   optim.weight_acc_lim_y = cfg.weight_acc_lim_y;
   optim.weight_acc_lim_theta = cfg.weight_acc_lim_theta;
+  // add jerk weight
+  optim.weight_jerk_lim_x = cfg.weight_jerk_lim_x;
+  optim.weight_jerk_lim_y = cfg.weight_jerk_lim_y;
+  optim.weight_jerk_lim_theta = cfg.weight_jerk_lim_theta;
+  // finish jerk weight
   optim.weight_kinematics_nh = cfg.weight_kinematics_nh;
   optim.weight_kinematics_forward_drive = cfg.weight_kinematics_forward_drive;
   optim.weight_kinematics_turning_radius = cfg.weight_kinematics_turning_radius;
