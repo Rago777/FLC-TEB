@@ -151,6 +151,14 @@ void TebOptimalPlanner::registerG2OTypes()
   factory->registerType("EDGE_ACCELERATION_HOLONOMIC", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomic>);
   factory->registerType("EDGE_ACCELERATION_HOLONOMIC_START", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicStart>);
   factory->registerType("EDGE_ACCELERATION_HOLONOMIC_GOAL", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicGoal>);
+  // add edge jerk
+  factory->registerType("EDGE_JERK", new g2o::HyperGraphElementCreator<EdgeJerk>);
+  factory->registerType("EDGE_JERK_START", new g2o::HyperGraphElementCreator<EdgeJerkStart>);
+  factory->registerType("EDGE_JERK_GOAL", new g2o::HyperGraphElementCreator<EdgeJerkGoal>);
+  factory->registerType("EDGE_JERK_HOLONOMIC", new g2o::HyperGraphElementCreator<EdgeJerkHolonomic>);
+  factory->registerType("EDGE_JERK_HOLONOMIC_START", new g2o::HyperGraphElementCreator<EdgeJerkHolonomicStart>);
+  factory->registerType("EDGE_JERK_HOLONOMIC_GOAL", new g2o::HyperGraphElementCreator<EdgeJerkHolonomicGoal>);
+  // finish add edge jerk
   factory->registerType("EDGE_KINEMATICS_DIFF_DRIVE", new g2o::HyperGraphElementCreator<EdgeKinematicsDiffDrive>);
   factory->registerType("EDGE_KINEMATICS_CARLIKE", new g2o::HyperGraphElementCreator<EdgeKinematicsCarlike>);
   factory->registerType("EDGE_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeObstacle>);
