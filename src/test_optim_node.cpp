@@ -106,9 +106,13 @@ int main( int argc, char** argv )
   obst_vector.push_back( boost::make_shared<PointObstacle>(3,-0.1) );
   obst_vector.push_back( boost::make_shared<PointObstacle>(1.5,0.1) );
   obst_vector.push_back( boost::make_shared<PointObstacle>(-2,-0.1) );
-//  obst_vector.push_back( boost::make_shared<LineObstacle>(1,1.5,1,-1.5) ); //90 deg
-//  obst_vector.push_back( boost::make_shared<LineObstacle>(1,0,-1,0) ); //180 deg
-//  obst_vector.push_back( boost::make_shared<PointObstacle>(-1.5,-0.5) );
+  obst_vector.push_back( boost::make_shared<LineObstacle>(-5, 1.1, -5, -1.1));
+  obst_vector.push_back( boost::make_shared<LineObstacle>(-5, -1.1, 5, -1.1));
+  obst_vector.push_back( boost::make_shared<LineObstacle>(5, -1.1, 5, 1.1));
+  obst_vector.push_back( boost::make_shared<LineObstacle>(5, 1.1, -5, 1.1));
+  //  obst_vector.push_back( boost::make_shared<LineObstacle>(1,1.5,1,-1.5) ); //90 deg
+  //  obst_vector.push_back( boost::make_shared<LineObstacle>(1,0,-1,0) ); //180 deg
+  //  obst_vector.push_back( boost::make_shared<PointObstacle>(-1.5,-0.5) );
 
   // Dynamic obstacles
   Eigen::Vector2d vel (0.1, -0.3);
