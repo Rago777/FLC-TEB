@@ -287,9 +287,9 @@ public:
     robot.acc_lim_y = 0.5;
     robot.acc_lim_theta = 0.5;
     //!!! User difined
-    robot.jerk_lim_x = 0.5;
-    robot.jerk_lim_y = 0.5;
-    robot.jerk_lim_theta = 0.5;
+    robot.jerk_lim_x = 0.1;
+    robot.jerk_lim_y = 0.0;
+    robot.jerk_lim_theta = 0.1;
     //!!! User difined
     robot.min_turning_radius = 0;
     robot.wheelbase = 1.0;
@@ -332,8 +332,8 @@ public:
     optim.optimization_activate = true;
     optim.optimization_verbose = false;
     optim.penalty_epsilon = 0.1;
-    optim.weight_max_vel_x = 2; //1
-    optim.weight_max_vel_y = 2;
+    optim.weight_max_vel_x = 1; //1
+    optim.weight_max_vel_y = 1;
     optim.weight_max_vel_theta = 1;
     optim.weight_acc_lim_x = 1;
     optim.weight_acc_lim_y = 1;
