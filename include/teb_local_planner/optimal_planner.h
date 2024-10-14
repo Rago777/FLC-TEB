@@ -40,7 +40,8 @@
 #define OPTIMAL_PLANNER_H_
 
 #include <math.h>
-
+#include <iostream>
+#include <fstream>
 
 // teb stuff
 #include <teb_local_planner/teb_config.h>
@@ -49,6 +50,7 @@
 #include <teb_local_planner/planner_interface.h>
 #include <teb_local_planner/visualization.h>
 #include <teb_local_planner/robot_footprint_model.h>
+#include <teb_local_planner/fuzzy_weight_controller.h>
 
 // g2o lib stuff
 #include <g2o/core/sparse_optimizer.h>
@@ -508,7 +510,39 @@ public:
           double circumscribed_radius=0.0, int look_ahead_idx=-1);
   
   //@}
-  
+  /**
+   * @brief Return the container of distance between each teb configuration and the nearest obstacle
+   */
+  std::vector<double> getMinObsDist();
+
+  /**
+   * @brief Calculate the min distance vector of this teb (by using the method from adge obstacle)
+   */
+  void calculateMinObsDistContainer();
+
+  /**
+   * @brief Return the average distance between each teb configuration and the nearest obstacle
+   */
+  double calculateAverageDist() const;
+
+  /**
+   * @brief Return a distance container from teb poses to nearest obstacle(only read)
+   */
+  double calculateComplexTurningSegment() const;
+
+  /**
+   * @brief Remove the zero element of the vector, from the end and stop when meet the first none zero element
+   * @param vec the container to be processed
+   */
+  void removeEndZeros(std::vector<double>& vec);
+
+  /**
+   * @brief Synchronize the local weights with the weights in the provided const TebConfig
+   */
+  void syncTebConfig();
+
+  void writeTrajectoryToFile(const TimedElasticBand teb, const std::string &filename) const;
+
 protected:
   
   /** @name Hyper-Graph creation and optimization */
@@ -590,6 +624,11 @@ protected:
    * @see optimizeGraph
   */
   void AddEdgesJerk();
+
+  /**
+   * @brief Add all edegs (local cost functions) form minimizing the path smoothness
+   */
+  void AddEdgesSmoothness();
 
   /**
    * @brief Add all edges (local cost functions) for minimizing the transition time (resp. minimize time differences)
@@ -690,11 +729,14 @@ protected:
 
   // external objects (store weak pointers)
   const TebConfig* cfg_; //!< Config class that stores and manages all related parameters
-  ObstContainer* obstacles_; //!< Store obstacles that are relevant for planning
+  TebConfig cfg_weight_;
+  FuzzyWeightController fuzzy_controller;
+  ObstContainer *obstacles_;            //!< Store obstacles that are relevant for planning
   const ViaPointContainer* via_points_; //!< Store via points for planning
   std::vector<ObstContainer> obstacles_per_vertex_; //!< Store the obstacles associated with the n-1 initial vertices
   
   double cost_; //!< Store cost value of the current hyper-graph
+  std::vector<double> min_obs_dist_;
   RotType prefer_rotdir_; //!< Store whether to prefer a specific initial rotation in optimization (might be activated in case the robot oscillates)
   
   // internal objects (memory management owned)

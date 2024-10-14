@@ -127,7 +127,7 @@ bool HomotopyClassPlanner::plan(const PoseSE2& start, const PoseSE2& goal, const
   optimizeAllTEBs(cfg_->optim.no_inner_iterations, cfg_->optim.no_outer_iterations);
   // Select which candidate (based on alternative homotopy classes) should be used
   selectBestTeb();
-
+  // ROS_INFO("The time of best path is %.2f", best_teb_->teb().timediffs().front()->dt() * best_teb_->teb().timediffs().size());
   initial_plan_ = nullptr; // clear pointer to any previous initial plan (any previous plan is useless regarding the h-signature);
   return true;
 }
@@ -484,6 +484,7 @@ void HomotopyClassPlanner::optimizeAllTEBs(int iter_innerloop, int iter_outerloo
     boost::thread_group teb_threads;
     for (TebOptPlannerContainer::iterator it_teb = tebs_.begin(); it_teb != tebs_.end(); ++it_teb)
     {
+      // ROS_INFO("check the teb is empty, the average dist id %.2f", (*it_teb)->calculateAverageDist());
       teb_threads.create_thread( boost::bind(&TebOptimalPlanner::optimizeTEB, it_teb->get(), iter_innerloop, iter_outerloop,
                                              true, cfg_->hcp.selection_obst_cost_scale, cfg_->hcp.selection_viapoint_cost_scale,
                                              cfg_->hcp.selection_alternative_time_cost) );
@@ -494,10 +495,18 @@ void HomotopyClassPlanner::optimizeAllTEBs(int iter_innerloop, int iter_outerloo
   {
     for (TebOptPlannerContainer::iterator it_teb = tebs_.begin(); it_teb != tebs_.end(); ++it_teb)
     {
+      // ROS_INFO("check the teb is empty, the average dist id %.2f", (*it_teb)->calculateAverageDist());
       it_teb->get()->optimizeTEB(iter_innerloop,iter_outerloop, true, cfg_->hcp.selection_obst_cost_scale,
                                  cfg_->hcp.selection_viapoint_cost_scale, cfg_->hcp.selection_alternative_time_cost); // compute cost as well inside optimizeTEB (last argument = true)
     }
   }
+  // int index = 0;
+  // for (TebOptPlannerContainer::iterator it_teb = tebs_.begin(); it_teb != tebs_.end(); ++it_teb)
+  // {
+  //   index++;
+  //   ROS_INFO("The %d Teb cost is: %.2f", index, (*it_teb)->getCurrentCost());
+  //   ROS_INFO("The %d obs cost is %.2f", index, (*it_teb)->GetObsCost());
+  // }
 }
 
 TebOptimalPlannerPtr HomotopyClassPlanner::getInitialPlanTEB()
@@ -845,5 +854,83 @@ bool HomotopyClassPlanner::computeStartOrientation(const TebOptimalPlannerPtr pl
   return true;
 }
 
+double HomotopyClassPlanner::calculateAverageDist() const
+{
+  std::vector<double> min_obs_dist_ = best_teb_->getMinObsDist();
+  // Check if the container is empty
+  if (min_obs_dist_.empty())
+  {
+    ROS_WARN("The best teb distance vector is empty.");
+    return -1.0;
+  }
+
+  double teb_distance_sum = 0.0;
+  for (std::vector<double>::iterator it = min_obs_dist_.begin(); it != min_obs_dist_.end(); ++it)
+  {
+    teb_distance_sum += *it;
+  }
+
+  return teb_distance_sum / min_obs_dist_.size();
+}
+
+double HomotopyClassPlanner::calculateComplexTurningSegment() const
+{
+  PoseSequence teb_poses = best_teb_->teb().poses();
+  // Check if the container is empty
+  if (teb_poses.empty())
+  {
+    ROS_WARN("The best teb trajetory vector is empty.");
+    return -1.0;
+  }
+
+  double n_turn = 0;
+  double n_sharp = 0;
+
+  double k_min = 0.2 / cfg_->robot.min_turning_radius;
+  double k_sharp = 0.8 / cfg_->robot.min_turning_radius;
+  double k_max = 1 / cfg_->robot.min_turning_radius;
+  // Pre allocate memory and then assign values
+  std::vector<double> teb_seg(teb_poses.size() - 1);
+
+  if (cfg_->trajectory.exact_arc_length) // use exact computation of the radius
+  {
+    for (int i = 0; i < teb_seg.size(); ++i)
+    {
+      // Calculate the curvature of each segment
+      Eigen::Vector2d deltaS = teb_poses[i + 1]->position() - teb_poses[i]->position();
+      double angle_diff = g2o::normalize_theta(teb_poses[i + 1]->theta() - teb_poses[i]->theta());
+      double curvature = fabs(2 * sin(angle_diff / 2) / deltaS.norm());
+      if (curvature > k_sharp)
+      {
+        n_sharp++;
+        continue;
+      }
+      else if (curvature > k_min)
+      {
+        n_turn++;
+      }
+    }
+  }
+  else // use approximate computation of the radius
+  {
+    for (int i = 0; i < teb_seg.size(); ++i)
+    {
+      Eigen::Vector2d deltaS = teb_poses[i + 1]->position() - teb_poses[i]->position();
+      double angle_diff = g2o::normalize_theta(teb_poses[i + 1]->theta() - teb_poses[i]->theta());
+      double curvature = fabs(angle_diff) / deltaS.norm();
+      if (curvature > k_sharp)
+      {
+        n_sharp++;
+        continue;
+      }
+      else if (curvature > k_min)
+      {
+        n_turn++;
+      }
+    }
+  }
+
+  return (n_turn + 2 * n_sharp) / teb_seg.size();
+}
 
 } // end namespace

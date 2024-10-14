@@ -117,6 +117,7 @@ void TebConfig::loadRosParamFromNodeHandle(const ros::NodeHandle& nh)
   nh.param("obstacle_proximity_upper_bound", obstacles.obstacle_proximity_upper_bound, obstacles.obstacle_proximity_upper_bound);
   
   // Optimization
+  nh.param("use_fuzzy_update_weights", optim.use_fuzzy_update_weights, optim.use_fuzzy_update_weights);
   nh.param("no_inner_iterations", optim.no_inner_iterations, optim.no_inner_iterations);
   nh.param("no_outer_iterations", optim.no_outer_iterations, optim.no_outer_iterations);
   nh.param("optimization_activate", optim.optimization_activate, optim.optimization_activate);
@@ -142,7 +143,8 @@ void TebConfig::loadRosParamFromNodeHandle(const ros::NodeHandle& nh)
   nh.param("weight_prefer_rotdir", optim.weight_prefer_rotdir, optim.weight_prefer_rotdir);
   nh.param("weight_adapt_factor", optim.weight_adapt_factor, optim.weight_adapt_factor);
   nh.param("obstacle_cost_exponent", optim.obstacle_cost_exponent, optim.obstacle_cost_exponent);
-  
+  nh.param("smoothness", optim.weight_smoothness, optim.weight_smoothness);
+
   // Homotopy Class Planner
   nh.param("enable_homotopy_class_planning", hcp.enable_homotopy_class_planning, hcp.enable_homotopy_class_planning); 
   nh.param("enable_multithreading", hcp.enable_multithreading, hcp.enable_multithreading); 
@@ -254,6 +256,7 @@ void TebConfig::reconfigure(TebLocalPlannerReconfigureConfig& cfg)
   obstacles.obstacle_proximity_upper_bound = cfg.obstacle_proximity_upper_bound;
   
   // Optimization
+  optim.use_fuzzy_update_weights = cfg.use_fuzzy_update_weights;
   optim.no_inner_iterations = cfg.no_inner_iterations;
   optim.no_outer_iterations = cfg.no_outer_iterations;
   optim.optimization_activate = cfg.optimization_activate;
@@ -269,6 +272,7 @@ void TebConfig::reconfigure(TebLocalPlannerReconfigureConfig& cfg)
   optim.weight_jerk_lim_x = cfg.weight_jerk_lim_x;
   optim.weight_jerk_lim_y = cfg.weight_jerk_lim_y;
   optim.weight_jerk_lim_theta = cfg.weight_jerk_lim_theta;
+  optim.weight_smoothness = cfg.weight_smoothness;
   // finish jerk weight
   optim.weight_kinematics_nh = cfg.weight_kinematics_nh;
   optim.weight_kinematics_forward_drive = cfg.weight_kinematics_forward_drive;

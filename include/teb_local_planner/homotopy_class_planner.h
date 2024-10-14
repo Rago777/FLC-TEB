@@ -507,6 +507,16 @@ public:
    */
   void randomlyDropTebs();
 
+  /**
+   * @brief Return the average distance between each TEB configuration and the nearest obstacle
+   */
+  double calculateAverageDist() const;
+
+  /**
+   * @brief Return a distance container from teb poses to nearest obstacle(only read)
+   */
+  double calculateComplexTurningSegment() const;
+
 protected:
 
   /** @name Explore new paths and keep only a single one for each homotopy class */
@@ -572,6 +582,8 @@ protected:
   bool initialized_; //!< Keeps track about the correct initialization of this class
 
   TebOptimalPlannerPtr last_best_teb_;  //!< Points to the plan used in the previous control cycle
+
+  std::vector<double> h_cost_;
 
 
 

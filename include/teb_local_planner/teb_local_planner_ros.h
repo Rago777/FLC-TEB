@@ -80,6 +80,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include <teb_local_planner/fuzzy_weight_controller.h>
 
 namespace teb_local_planner
 {
@@ -390,6 +391,7 @@ protected:
   
   void configureBackupModes(std::vector<geometry_msgs::PoseStamped>& transformed_plan,  int& goal_idx);
 
+  void resetOptimalWeights();
 
   
 private:
@@ -418,6 +420,8 @@ private:
 
   boost::shared_ptr< dynamic_reconfigure::Server<TebLocalPlannerReconfigureConfig> > dynamic_recfg_; //!< Dynamic reconfigure server to allow config modifications at runtime
   ros::Subscriber custom_obst_sub_; //!< Subscriber for custom obstacles received via a ObstacleMsg.
+  ros::Publisher obs_cost_pub_;
+  FuzzyWeightController fuzzy_controller_;
   boost::mutex custom_obst_mutex_; //!< Mutex that locks the obstacle array (multi-threaded)
   costmap_converter::ObstacleArrayMsg custom_obstacle_msg_; //!< Copy of the most recent obstacle message
 

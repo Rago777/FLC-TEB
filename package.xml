@@ -26,9 +26,11 @@
   <build_depend>message_generation</build_depend>
   <build_depend>tf2_eigen</build_depend>
   <build_depend>tf2_geometry_msgs</build_depend>
+  <!-- <build_depend>fuzzylite</build_depend> -->
   
   <build_export_depend>message_runtime</build_export_depend>
   <exec_depend>message_runtime</exec_depend>
+  <!-- <exec_depend>fuzzylite</exec_depend> -->
   
   <depend>base_local_planner</depend>
   <depend>costmap_2d</depend>

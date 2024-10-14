@@ -36,7 +36,7 @@ def path_plotter():
   global path
   rospy.init_node("visualize_path_profile", anonymous=True)
   
-  topic_name = "/test_optim_node/local_plan"
+  topic_name = "/move_base/TebLocalPlannerROS/local_plan"
   topic_name = rospy.get_param('~feedback_topic', topic_name)
   rospy.Subscriber(topic_name, Path, feedback_callback, queue_size = 100) # define feedback topic here!
 

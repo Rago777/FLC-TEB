@@ -261,6 +261,7 @@ void TebVisualization::publishObstacles(const ObstContainer& obstacles) const
       marker.type = visualization_msgs::Marker::LINE_STRIP;
       marker.action = visualization_msgs::Marker::ADD;
       marker.lifetime = ros::Duration(2.0);
+      // marker.lifetime = ros::Duration(0);
       geometry_msgs::Point start;
       start.x = pobst->start().x();
       start.y = pobst->start().y();

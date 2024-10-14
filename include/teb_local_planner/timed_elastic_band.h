@@ -648,6 +648,8 @@ protected:
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
+//! Abbrev. for shared const TimedElasticBand pointers
+typedef boost::shared_ptr<const TimedElasticBand> TimedElasticBandPtr;
 
 } // namespace teb_local_planner
 

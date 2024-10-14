@@ -37,6 +37,7 @@
  *********************************************************************/
 
 #include <teb_local_planner/teb_local_planner_ros.h>
+#include <std_msgs/String.h>
 
 #include <tf2_eigen/tf2_eigen.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
@@ -177,7 +178,13 @@ void TebLocalPlannerROS::initialize(std::string name, tf2_ros::Buffer* tf, costm
 
     // setup callback for custom via-points
     via_points_sub_ = nh.subscribe("via_points", 1, &TebLocalPlannerROS::customViaPointsCB, this);
-    
+
+    // publishe obs cost
+    // obs_cost_pub_ = nh.advertise<std_msgs::String>("obs_cost", 1);
+
+    // fuzzy weight controller
+    // fuzzy_controller_.initialize(cfg_, robot_model);
+
     // initialize failure detector
     ros::NodeHandle nh_move_base("~");
     double controller_frequency = 5;
@@ -366,6 +373,16 @@ uint32_t TebLocalPlannerROS::computeVelocityCommands(const geometry_msgs::PoseSt
     message = "teb_local_planner was not able to obtain a local plan";
     return mbf_msgs::ExePathResult::NO_VALID_CMD;
   }
+
+  // if (cfg_.optim.use_fuzzy_update_weights)
+  // {
+  //   fuzzy_controller_.startFuzzyWeights(planner_->calculateAverageDist(), planner_->calculateComplexTurningSegment());
+  //   ROS_INFO("Start fuzzy controller success, the param use_fuzzy_update_weights is %s", cfg_.optim.use_fuzzy_update_weights ? "true" : "false");
+  // }
+  // else
+  // {
+  //   ROS_INFO("Start fuzzy controller fail, the param use_fuzzy_update_weights is %s", cfg_.optim.use_fuzzy_update_weights ? "true" : "false");
+  // }
 
   // Check for divergence
   if (planner_->hasDiverged())

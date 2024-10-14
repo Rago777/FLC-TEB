@@ -49,6 +49,7 @@
 // this package
 #include <teb_local_planner/pose_se2.h>
 #include <teb_local_planner/robot_footprint_model.h>
+#include <teb_local_planner/timed_elastic_band.h>
 
 // messages
 #include <geometry_msgs/PoseArray.h>
@@ -197,6 +198,15 @@ public:
    */
   virtual bool hasDiverged() const = 0;
                 
+  /**
+   * @brief Return the average distance between each TEB configuration and the nearest obstacle
+   */
+  virtual double calculateAverageDist() const = 0;
+
+  /**
+   * @brief Return a distance container from teb poses to nearest obstacle(only read)
+   */
+  virtual double calculateComplexTurningSegment() const = 0;
 };
 
 //! Abbrev. for shared instances of PlannerInterface or it's subclasses 

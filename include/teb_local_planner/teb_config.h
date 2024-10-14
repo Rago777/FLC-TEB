@@ -149,6 +149,7 @@ public:
   //! Optimization related parameters
   struct Optimization
   {
+    bool use_fuzzy_update_weights; //!< Update weights from fuzzy controller
     int no_inner_iterations; //!< Number of solver iterations called in each outerloop iteration
     int no_outer_iterations; //!< Each outerloop iteration automatically resizes the trajectory and invokes the internal optimizer with no_inner_iterations
 
@@ -167,6 +168,7 @@ public:
     double weight_jerk_lim_x;//!< Optimization weight for satisfying the maximum allowed translational jerk
     double weight_jerk_lim_y;//!< Optimization weight for satisfying the maximum allowed translational jerk (in use only for holonomic robots)
     double weight_jerk_lim_theta;//!< Optimization weight for satisfying the maximum allowed translational jerk
+    double weight_smoothness;//!< Optimization weight for contracting the trajectory w.r.t. path smooth
     //!!! User difined
     double weight_kinematics_nh; //!< Optimization weight for satisfying the non-holonomic kinematics
     double weight_kinematics_forward_drive; //!< Optimization weight for forcing the robot to choose only forward directions (positive transl. velocities, only diffdrive robot)
@@ -327,6 +329,7 @@ public:
 
     // Optimization
 
+    optim.use_fuzzy_update_weights = false;
     optim.no_inner_iterations = 5;
     optim.no_outer_iterations = 4;
     optim.optimization_activate = true;
@@ -342,6 +345,7 @@ public:
     optim.weight_jerk_lim_x = 1;
     optim.weight_jerk_lim_y = 1;
     optim.weight_jerk_lim_theta = 1;
+    optim.weight_smoothness = 1;
     //!!! User difined
     optim.weight_kinematics_nh = 1000;
     optim.weight_kinematics_forward_drive = 1;

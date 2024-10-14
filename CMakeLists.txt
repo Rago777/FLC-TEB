@@ -35,6 +35,9 @@ find_package(Boost REQUIRED COMPONENTS system thread graph)
 find_package(SUITESPARSE REQUIRED)
 find_package(G2O REQUIRED)
 
+set(fuzzylite_INCLUDE_DIRS /usr/include/fl)
+set(fuzzylite_LIBRARIES /usr/local/lib/libfuzzylite.so)
+
 # Eigen3 FindScript Backward compatibility (ubuntu saucy)
 # Since FindEigen.cmake is deprecated starting from jade.
 if (EXISTS "FindEigen3.cmake")
@@ -178,6 +181,7 @@ include_directories(
   SYSTEM
   ${EXTERNAL_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
+  ${fuzzylite_INCLUDE_DIRS}
 )
 
 ## Build the teb_local_planner library
@@ -192,6 +196,7 @@ add_library(teb_local_planner
    src/homotopy_class_planner.cpp
    src/teb_local_planner_ros.cpp
    src/graph_search.cpp
+   src/fuzzy_weight_controller.cpp
 )
 
 # Dynamic reconfigure: make sure configure headers are built before any node using them
@@ -202,6 +207,7 @@ add_dependencies(teb_local_planner ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(teb_local_planner
    ${EXTERNAL_LIBS}
    ${catkin_LIBRARIES}
+   ${fuzzylite_LIBRARIES}
 )
 
 
@@ -214,6 +220,7 @@ target_link_libraries(test_optim_node
    teb_local_planner
    ${EXTERNAL_LIBS}
    ${catkin_LIBRARIES}
+   ${fuzzylite_LIBRARIES}
 )
 
 
