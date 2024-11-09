@@ -68,6 +68,8 @@ void FuzzyWeightController::startFuzzyWeights(double average_distance, double tu
     ROS_WARN("narrowness or turn_complex is not available");
     return;
   }
+  if (average_distance > 4 * cfg_->robot.min_turning_radius)
+    average_distance = 4 * cfg_->robot.min_turning_radius;
 
   setInputN(average_distance);
 
